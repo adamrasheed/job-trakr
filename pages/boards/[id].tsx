@@ -1,14 +1,19 @@
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { getBoards } from "../../handlers/boards";
 
 import { getJobs } from "../../handlers/jobs";
 import prisma from "../../lib/prisma";
 import { FormattedJob } from "../../types";
+import board from "../api/board";
 
 const BoardPage = () => {
+  const { query } = useRouter();
+  const { id } = query;
+
   return (
     <main>
-      <h2>Board Page</h2>
+      <h2>Board Page {id}</h2>
     </main>
   );
 };
@@ -16,16 +21,22 @@ const BoardPage = () => {
 export default BoardPage;
 
 export const getStaticPaths = async () => {
-  const boards = await getBoards();
+  try {
+    const boards = await getBoards();
 
-  const paths = boards.map((board) => ({
-    params: { id: board.id },
-  }));
+    console.log({ boards });
 
-  return {
-    paths,
-    fallback: false,
-  };
+    const paths = boards.map((board) => ({
+      params: { id: board.id },
+    }));
+
+    return {
+      paths,
+      fallback: false,
+    };
+  } catch (error) {
+    console.log({ error });
+  }
 };
 
 type BoardPageProps = {
@@ -33,11 +44,13 @@ type BoardPageProps = {
 };
 
 export const getStaticProps: GetStaticProps<BoardPageProps> = async (
-  params
+  context
 ) => {
-  console.log(params);
+  const boardId = context.params?.id || "";
 
-  const jobs = await getJobs();
+  const jobs = await getJobs(boardId as string);
+
+  console.log({ fetchedJibs: jobs });
 
   return {
     props: { jobs },

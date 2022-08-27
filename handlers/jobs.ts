@@ -1,15 +1,15 @@
 import { server } from "../utils/constants";
 
 export const getJobs = async (boardId?: string) => {
-  const url = new URL(`${server}/api/jobs`, { quer });
-  const response = await fetch("api/jobs", {
+  // const url = new URL(`${server}/api/jobs`);
+
+  const response = await fetch(`${server}/api/jobs`, {
     method: "GET",
-    body: JSON.stringify({
-      data: {
-        boardId,
-      },
-    }),
   });
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
 
   return await response.json();
 };
