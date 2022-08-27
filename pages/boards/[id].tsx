@@ -1,26 +1,19 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
-import { useRouter } from "next/router";
 import JobsTable from "../../components/JobsTable";
-import { getBoards } from "../../handlers/boards";
+import { getBoard, getBoards } from "../../handlers/boards";
 
 import { getJobs } from "../../handlers/jobs";
-import prisma from "../../lib/prisma";
-import { FormattedJob } from "../../types";
-import board from "../api/board";
+import { FormattedBoard, FormattedJob } from "../../types";
 
 const BoardPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   jobs,
+  board,
 }) => {
-  const { query } = useRouter();
-  const { id } = query;
-
-  console.log({ jobs });
-
   const hasJobs = !!jobs.length;
 
   return (
     <main>
-      <h2>Board Page {id}</h2>
+      <h2>{board.name}</h2>
       {hasJobs && <JobsTable jobs={jobs} />}
     </main>
   );
@@ -31,8 +24,6 @@ export default BoardPage;
 export const getStaticPaths = async () => {
   try {
     const boards = await getBoards();
-
-    console.log({ boards });
 
     const paths = boards.map((board) => ({
       params: { id: board.id },
@@ -48,6 +39,7 @@ export const getStaticPaths = async () => {
 };
 
 type BoardPageProps = {
+  board: FormattedBoard;
   jobs: FormattedJob[];
 };
 
@@ -56,11 +48,11 @@ export const getStaticProps: GetStaticProps<BoardPageProps> = async (
 ) => {
   const boardId = context.params?.id || "";
 
+  const board = await getBoard(boardId as string);
+
   const jobs = await getJobs(boardId as string);
 
-  console.log({ fetchedJibs: jobs });
-
   return {
-    props: { jobs },
+    props: { jobs, board },
   };
 };

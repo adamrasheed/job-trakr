@@ -1,4 +1,5 @@
 import { Board } from "@prisma/client";
+import { FormattedBoard } from "../types";
 import { server } from "../utils/constants";
 
 type CreateBoard = {
@@ -21,6 +22,22 @@ export const createBoard = async ({ name, userId }: CreateBoard) => {
   }
 
   return await response.json();
+};
+
+export const getBoard = async (boardId: string): Promise<FormattedBoard> => {
+  const url = `${server}/api/boards?` + new URLSearchParams({ boardId });
+
+  const response = await fetch(url, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  const data = await response.json();
+
+  return data;
 };
 
 export const getBoards = async (): Promise<Board[]> => {

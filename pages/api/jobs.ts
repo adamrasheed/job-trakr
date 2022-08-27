@@ -6,7 +6,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const jobs = await prisma.job.findMany();
+  const { boardId } = req.query;
+  let jobs;
+
+  if (typeof boardId === "string") {
+    jobs = await prisma.job.findMany({ where: { boardId } });
+  } else {
+    jobs = await prisma.job.findMany();
+  }
 
   res.json(jobs);
 }
