@@ -1,8 +1,8 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
-import JobsTable from "../../components/JobsTable";
+import JobForm from "../../components/JobForm";
+import JobsList from "../../components/JobsList";
 import { getBoard, getBoards } from "../../handlers/boards";
-
-import { getJobs } from "../../handlers/jobs";
+import { createJob, getJobs } from "../../handlers/jobs";
 import { FormattedBoard, FormattedJob } from "../../types";
 
 const BoardPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
@@ -11,10 +11,17 @@ const BoardPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 }) => {
   const hasJobs = !!jobs.length;
 
+  const handleJobSubmit = (values: { name: string; url: string }) => {
+    createJob({ ...values, boardId: board.id }).then((data) => {
+      console.log({ data });
+    });
+  };
+
   return (
     <main>
-      <h2>{board.name}</h2>
-      {hasJobs && <JobsTable jobs={jobs} />}
+      <h2 className="page_title">{board.name}</h2>
+      <JobForm onSubmit={handleJobSubmit} />
+      {hasJobs && <JobsList jobs={jobs} />}
     </main>
   );
 };

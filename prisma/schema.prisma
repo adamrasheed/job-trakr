@@ -15,6 +15,7 @@ model Job {
   createdAt    DateTime  @default(now())
   name         String
   status       JobStatus  @default(VIEWED)
+  url          String?
   dateModified DateTime  @updatedAt
   board        Board     @relation(fields: [boardId], references: [id])
   boardId      String
