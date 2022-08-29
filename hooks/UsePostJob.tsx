@@ -10,17 +10,16 @@ const UsePostJob = () => {
   // Get QueryClient from the context
   const queryClient = useQueryClient();
 
-  const { mutate, isLoading, isSuccess } = useMutation(
+  const { mutate, isLoading, error } = useMutation(
     (payload: Payload) => createJob(payload),
     {
       onSuccess: () => {
-        console.log("SUCCESS");
         queryClient.invalidateQueries(["jobs"]);
       },
     }
   );
 
-  return { postJob: mutate, isPostingJob: isLoading, isSuccess };
+  return { postJob: mutate, isPostingJob: isLoading, jobError: error };
 };
 
 export default UsePostJob;

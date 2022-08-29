@@ -1,6 +1,6 @@
 import Link from "next/link";
 import styled from "styled-components";
-import { FormattedBoard } from "../types";
+import { IBoard } from "../types";
 
 const StyledBoardsList = styled.div`
   list-style: none;
@@ -12,7 +12,7 @@ const BoardListItem = styled.li`
 `;
 
 type BoardsListProps = {
-  boards: FormattedBoard[];
+  boards: IBoard[];
 };
 
 const BoardsList: React.FC<BoardsListProps> = ({ boards }) => {

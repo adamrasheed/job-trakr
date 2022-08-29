@@ -1,8 +1,8 @@
-import { FormattedJob } from "../types";
+import { IJob } from "../types";
 
 import { Cell, HeaderCell, Row } from "../styles/StyledJobs";
 
-const JobsList: React.FC<{ jobs: FormattedJob[] }> = ({ jobs }) => {
+const JobsList: React.FC<{ jobs: IJob[] }> = ({ jobs }) => {
   return (
     <div>
       <Row isHeader>

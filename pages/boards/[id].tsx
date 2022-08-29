@@ -1,21 +1,20 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import JobForm from "../../components/JobForm";
 import JobsList from "../../components/JobsList";
-import { getBoard, getBoards } from "../../handlers/boards";
-import { createJob, fetchJobs } from "../../handlers/jobs";
-import UseFetchJobs from "../../hooks/UseFetchJobs";
+import { getBoard, fetchBoardsHandler } from "../../handlers/boards";
+import { fetchJobs } from "../../handlers/jobs";
+import UseFetchJobs from "../../hooks/useFetchJobs";
 import UsePostJob from "../../hooks/UsePostJob";
-import { FormattedBoard, FormattedJob } from "../../types";
+import { IBoard, IJob } from "../../types";
 
 const BoardPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   initialJobs,
   board,
 }) => {
   const { jobs, isLoading } = UseFetchJobs({ boardId: board.id, initialJobs });
-  const { postJob, isPostingJob, isSuccess } = UsePostJob();
+  const { postJob, isPostingJob, jobError } = UsePostJob();
 
   const showJobs = !!initialJobs?.length && !isLoading;
-  console.log({ jobs });
 
   const handleJobSubmit = ({ name, url }: { name: string; url: string }) => {
     postJob(
@@ -39,7 +38,7 @@ export default BoardPage;
 
 export const getStaticPaths = async () => {
   try {
-    const boards = await getBoards();
+    const boards = await fetchBoardsHandler();
 
     const paths = boards.map((board) => ({
       params: { id: board.id },
@@ -50,13 +49,13 @@ export const getStaticPaths = async () => {
       fallback: false,
     };
   } catch (error) {
-    console.log({ error });
+    console.error({ error });
   }
 };
 
 type BoardPageProps = {
-  board: FormattedBoard;
-  initialJobs: FormattedJob[];
+  board: IBoard;
+  initialJobs: IJob[];
   error?: unknown;
 };
 

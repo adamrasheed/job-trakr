@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchJobs } from "../handlers/jobs";
-import { FormattedJob } from "../types";
+import { IJob } from "../types";
 
 type Props = {
   boardId?: string;
-  initialJobs: FormattedJob[];
+  initialJobs: IJob[];
 };
 const UseFetchJobs = ({ boardId, initialJobs }: Props) => {
   const { data, isLoading, error } = useQuery(
