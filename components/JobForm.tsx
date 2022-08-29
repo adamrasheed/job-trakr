@@ -6,7 +6,11 @@ const initialValues = {
   url: "",
 };
 
-const StyleForm = styled.form`
+const StyledJobForm = styled.div`
+  max-width: 40rem;
+`;
+
+const StyledForm = styled.form`
   margin: 2rem 0;
   display: grid;
   grid-gap: 1rem;
@@ -33,9 +37,9 @@ const JobForm: React.FC<JobFormProps> = ({ onSubmit }) => {
   });
 
   return (
-    <div>
-      <h3>Track a new job!</h3>
-      <StyleForm action="" onSubmit={formik.handleSubmit}>
+    <StyledJobForm>
+      <h4>Track a new job!</h4>
+      <StyledForm action="" onSubmit={formik.handleSubmit}>
         <fieldset>
           <label htmlFor="name">Name</label>
           <input
@@ -59,8 +63,8 @@ const JobForm: React.FC<JobFormProps> = ({ onSubmit }) => {
           />
         </fieldset>
         <button type="submit">Submit</button>
-      </StyleForm>
-    </div>
+      </StyledForm>
+    </StyledJobForm>
   );
 };
 

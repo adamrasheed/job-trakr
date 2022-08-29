@@ -1,11 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "../../lib/prisma";
+import { IBoard } from "../../types";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
-) {
+): IBoard[] {
   const { boardId } = req.query;
   let boards;
 

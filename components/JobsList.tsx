@@ -1,8 +1,8 @@
-import { FormattedJob } from "../types";
+import { IJob } from "../types";
 
 import { Cell, HeaderCell, Row } from "../styles/StyledJobs";
 
-const JobsList: React.FC<{ jobs: FormattedJob[] }> = ({ jobs }) => {
+const JobsList: React.FC<{ jobs: IJob[] }> = ({ jobs }) => {
   return (
     <div>
       <Row isHeader>
@@ -13,7 +13,15 @@ const JobsList: React.FC<{ jobs: FormattedJob[] }> = ({ jobs }) => {
 
       {jobs.map((job) => (
         <Row key={job.id}>
-          <Cell>{job.name}</Cell>
+          <Cell>
+            {job.url ? (
+              <a target="_blank" href={job.url} rel="noreferrer">
+                {job.name}
+              </a>
+            ) : (
+              job.name
+            )}
+          </Cell>
           <Cell>{job.status}</Cell>
           <Cell>{new Date(job.dateModified).toDateString()}</Cell>
         </Row>

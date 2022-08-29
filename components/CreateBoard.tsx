@@ -1,12 +1,18 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import styled from "styled-components";
 
-import styles from "../styles/Home.module.css";
+const Form = styled.form`
+  display: grid;
+  grid-gap: 1rem;
+  max-width: 32rem;
+`;
 
 type CreateBoardProps = {
   onSubmit: (name: string) => void;
+  isLoading?: boolean;
 };
 
-const CreateBoard: React.FC<CreateBoardProps> = ({ onSubmit }) => {
+const CreateBoard: React.FC<CreateBoardProps> = ({ onSubmit, isLoading }) => {
   const [name, setName] = useState("");
 
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -21,8 +27,8 @@ const CreateBoard: React.FC<CreateBoardProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div>
-      <form className={styles.form} action="" onSubmit={handleSubmit}>
+    <Form action="" onSubmit={handleSubmit}>
+      <fieldset>
         <label htmlFor="name">Board Name</label>
         <input
           type="text"
@@ -31,9 +37,11 @@ const CreateBoard: React.FC<CreateBoardProps> = ({ onSubmit }) => {
           placeholder="November 2022 Jobs"
           onChange={handleNameChange}
         />
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+      </fieldset>
+      <button disabled={isLoading} type="submit">
+        Submit
+      </button>
+    </Form>
   );
 };
 export default CreateBoard;

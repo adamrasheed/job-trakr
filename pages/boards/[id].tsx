@@ -1,27 +1,35 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import JobForm from "../../components/JobForm";
 import JobsList from "../../components/JobsList";
-import { getBoard, getBoards } from "../../handlers/boards";
-import { createJob, getJobs } from "../../handlers/jobs";
-import { FormattedBoard, FormattedJob } from "../../types";
+import { getBoard, fetchBoardsHandler } from "../../handlers/boards";
+import { fetchJobs } from "../../handlers/jobs";
+import UseFetchJobs from "../../hooks/useFetchJobs";
+import UsePostJob from "../../hooks/UsePostJob";
+import { IBoard, IJob } from "../../types";
 
 const BoardPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  jobs,
+  initialJobs,
   board,
 }) => {
-  const hasJobs = !!jobs.length;
+  const { jobs, isLoading } = UseFetchJobs({ boardId: board.id, initialJobs });
+  const { postJob, isPostingJob, jobError } = UsePostJob();
 
-  const handleJobSubmit = (values: { name: string; url: string }) => {
-    createJob({ ...values, boardId: board.id }).then((data) => {
-      console.log({ data });
-    });
+  const showJobs = !!initialJobs?.length && !isLoading;
+
+  const handleJobSubmit = ({ name, url }: { name: string; url: string }) => {
+    postJob(
+      { name, url, boardId: board.id },
+      {
+        onSuccess: () => console.log("success on posting job"),
+      }
+    );
   };
 
   return (
     <main>
       <h2 className="page_title">{board.name}</h2>
       <JobForm onSubmit={handleJobSubmit} />
-      {hasJobs && <JobsList jobs={jobs} />}
+      {showJobs && <JobsList jobs={jobs} />}
     </main>
   );
 };
@@ -30,7 +38,7 @@ export default BoardPage;
 
 export const getStaticPaths = async () => {
   try {
-    const boards = await getBoards();
+    const boards = await fetchBoardsHandler();
 
     const paths = boards.map((board) => ({
       params: { id: board.id },
@@ -41,25 +49,26 @@ export const getStaticPaths = async () => {
       fallback: false,
     };
   } catch (error) {
-    console.log({ error });
+    console.error({ error });
   }
 };
 
 type BoardPageProps = {
-  board: FormattedBoard;
-  jobs: FormattedJob[];
+  board: IBoard;
+  initialJobs: IJob[];
+  error?: unknown;
 };
 
-export const getStaticProps: GetStaticProps<BoardPageProps> = async (
-  context
-) => {
-  const boardId = context.params?.id || "";
+export const getStaticProps: GetStaticProps<BoardPageProps> = async ({
+  params,
+}) => {
+  const boardId = params?.id || "";
 
   const board = await getBoard(boardId as string);
 
-  const jobs = await getJobs(boardId as string);
+  const initialJobs = await fetchJobs(boardId as string);
 
   return {
-    props: { jobs, board },
+    props: { initialJobs, board },
   };
 };
