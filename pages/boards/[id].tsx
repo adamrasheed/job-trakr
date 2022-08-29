@@ -2,26 +2,35 @@ import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import JobForm from "../../components/JobForm";
 import JobsList from "../../components/JobsList";
 import { getBoard, getBoards } from "../../handlers/boards";
-import { createJob, getJobs } from "../../handlers/jobs";
+import { createJob, fetchJobs } from "../../handlers/jobs";
+import UseFetchJobs from "../../hooks/UseFetchJobs";
+import UsePostJob from "../../hooks/UsePostJob";
 import { FormattedBoard, FormattedJob } from "../../types";
 
 const BoardPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  jobs,
+  initialJobs,
   board,
 }) => {
-  const hasJobs = !!jobs.length;
+  const { jobs, isLoading } = UseFetchJobs({ boardId: board.id, initialJobs });
+  const { postJob, isPostingJob, isSuccess } = UsePostJob();
 
-  const handleJobSubmit = (values: { name: string; url: string }) => {
-    createJob({ ...values, boardId: board.id }).then((data) => {
-      console.log({ data });
-    });
+  const showJobs = !!initialJobs?.length && !isLoading;
+  console.log({ jobs });
+
+  const handleJobSubmit = ({ name, url }: { name: string; url: string }) => {
+    postJob(
+      { name, url, boardId: board.id },
+      {
+        onSuccess: () => console.log("success on posting job"),
+      }
+    );
   };
 
   return (
     <main>
       <h2 className="page_title">{board.name}</h2>
       <JobForm onSubmit={handleJobSubmit} />
-      {hasJobs && <JobsList jobs={jobs} />}
+      {showJobs && <JobsList jobs={jobs} />}
     </main>
   );
 };
@@ -47,19 +56,20 @@ export const getStaticPaths = async () => {
 
 type BoardPageProps = {
   board: FormattedBoard;
-  jobs: FormattedJob[];
+  initialJobs: FormattedJob[];
+  error?: unknown;
 };
 
-export const getStaticProps: GetStaticProps<BoardPageProps> = async (
-  context
-) => {
-  const boardId = context.params?.id || "";
+export const getStaticProps: GetStaticProps<BoardPageProps> = async ({
+  params,
+}) => {
+  const boardId = params?.id || "";
 
   const board = await getBoard(boardId as string);
 
-  const jobs = await getJobs(boardId as string);
+  const initialJobs = await fetchJobs(boardId as string);
 
   return {
-    props: { jobs, board },
+    props: { initialJobs, board },
   };
 };

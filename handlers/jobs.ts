@@ -1,7 +1,8 @@
 import { server } from "../utils/constants";
 import qs from "qs";
+import { FormattedJob } from "../types";
 
-export const getJobs = async (boardId?: string) => {
+export const fetchJobs = async (boardId?: string): Promise<FormattedJob[]> => {
   let url = `${server}/api/jobs`;
 
   if (boardId) {

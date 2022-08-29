@@ -12,11 +12,12 @@ body {
 
   --color-button-bg: var(--color-text);
   --color-button-text: var(--color-background);
+
+  --size-container: 64rem;
 }
 
 a {
   color: inherit;
-  text-decoration: none;
 }
 
 * {
@@ -46,12 +47,24 @@ a {
   font-size: 1rem;
 }
 
+.site_title > a {
+  text-decoration: none;
+}
+
 .page_title {
-  margin: 1rem 0;
+  margin: 0;
 }
 
 main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 2rem;
+  margin: 1rem auto;
+  width: 100%;
+  max-width: var(--size-container);
 }
 
 h1,
@@ -103,4 +116,10 @@ button {
   font-weight: 500;
   border: none;
   cursor: pointer;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  max-width: var(--size-container);
 }

@@ -13,7 +13,15 @@ const JobsList: React.FC<{ jobs: FormattedJob[] }> = ({ jobs }) => {
 
       {jobs.map((job) => (
         <Row key={job.id}>
-          <Cell>{job.name}</Cell>
+          <Cell>
+            {job.url ? (
+              <a target="_blank" href={job.url} rel="noreferrer">
+                {job.name}
+              </a>
+            ) : (
+              job.name
+            )}
+          </Cell>
           <Cell>{job.status}</Cell>
           <Cell>{new Date(job.dateModified).toDateString()}</Cell>
         </Row>
