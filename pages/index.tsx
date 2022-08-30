@@ -4,6 +4,7 @@ import BoardsList from "../components/BoardsList";
 import CreateBoard from "../components/CreateBoard";
 import { fetchBoardsHandler } from "../handlers/boards";
 import { fetchUserHandler } from "../handlers/user";
+import useAuthSession from "../hooks/useAuthSession";
 import UseFetchBoards from "../hooks/useFetchBoards";
 import UseFetchUser from "../hooks/useFetchUser";
 import UsePostBoard from "../hooks/usePostBoard";
@@ -14,6 +15,8 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   initialUser,
   initialBoards,
 }) => {
+  const [session, isSessionLoading] = useAuthSession({ required: true });
+
   const { postBoard, isPostingBoard } = UsePostBoard();
   const { user, isLoadingUser, userError } = UseFetchUser({
     userId: "888ab0a8-b32c-47e1-9882-7a4136d1d1f2",
@@ -41,6 +44,8 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     console.error(boardsError);
     throw new Error();
   }
+
+  console.log({ session });
 
   return (
     <main>
