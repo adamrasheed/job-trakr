@@ -112,16 +112,17 @@ export const appRouter = trpc
   })
   .mutation("job", {
     input: z.object({
+      id: z.string().optional(),
       name: z.string(),
       boardId: z.string(),
       url: z.string().nullable(),
-      status: z.nativeEnum(JobStatus).nullable(),
+      status: z.nativeEnum(JobStatus).optional(),
     }),
-    async resolve({ input: { name, boardId, url } }) {
+    async resolve({ input: { name, boardId, url, status, id } }) {
       const jobInDb = await prisma.job.upsert({
-        create: { name, boardId, url },
-        update: { status },
+        update: { status, name },
         where: { id },
+        create: { name, boardId, url },
       });
 
       if (!jobInDb) {
