@@ -11,6 +11,8 @@ import type { AppRouter } from "../backend/router";
 import Footer from "../components/Footer";
 
 import "../styles/globals.css";
+import { ThemeProvider } from "styled-components";
+import { theme } from "../styledTheme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
@@ -18,18 +20,20 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session} refetchInterval={0}>
       <QueryClientProvider client={queryClient}>
-        <header>
-          <div className="container">
-            <h1 className="site_title">
-              <Link href={"/"}>
-                <a>{siteInfo.title}</a>
-              </Link>
-            </h1>
-          </div>
-        </header>
-        <Component {...pageProps} />
-        <Footer />
-        <ReactQueryDevtools initialIsOpen={false} />
+        <ThemeProvider theme={theme}>
+          <header>
+            <div className="container">
+              <h1 className="site_title">
+                <Link href={"/"}>
+                  <a>{siteInfo.title}</a>
+                </Link>
+              </h1>
+            </div>
+          </header>
+          <Component {...pageProps} />
+          <Footer />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </ThemeProvider>
       </QueryClientProvider>
     </SessionProvider>
   );
