@@ -9,16 +9,18 @@ import UsePostBoard from "../hooks/usePostBoard";
 
 import { IBoard, IUser } from "../../types";
 
+const DEFAULT_USER_ID = "534cd55d-4a97-42ce-9c81-cc9decf2f805";
+
 const Home: NextPage = () => {
   // const [session, isSessionLoading] = useAuthSession();
 
   const { postBoard, isPostingBoard } = UsePostBoard();
   const { user, isLoadingUser, userError } = UseFetchUser({
-    userId: "888ab0a8-b32c-47e1-9882-7a4136d1d1f2",
+    userId: DEFAULT_USER_ID,
   });
 
   const { boards, isLoadingBoards, boardsError } = UseFetchBoards({
-    userId: user?.id || "888ab0a8-b32c-47e1-9882-7a4136d1d1f2",
+    userId: user?.id || DEFAULT_USER_ID,
   });
 
   const handleSubmit = async (name: string) => {

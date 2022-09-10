@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
+import { Button } from "../styles/StyledGenerics";
 
 const Form = styled.form`
   display: grid;
@@ -29,18 +30,19 @@ const CreateBoard: React.FC<CreateBoardProps> = ({ onSubmit, isLoading }) => {
   return (
     <Form action="" onSubmit={handleSubmit}>
       <fieldset>
-        <label htmlFor="name">Board Name</label>
+        <label htmlFor="boardName">Board Name</label>
         <input
           type="text"
-          name="name"
-          id="name"
+          name="boardName"
+          id="boardNAme"
           placeholder="November 2022 Jobs"
+          value={name}
           onChange={handleNameChange}
         />
       </fieldset>
-      <button disabled={isLoading} type="submit">
+      <Button disabled={isLoading} type="submit">
         Submit
-      </button>
+      </Button>
     </Form>
   );
 };

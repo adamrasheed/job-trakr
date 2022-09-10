@@ -1,8 +1,15 @@
+import { JobStatus } from "@prisma/client";
 import { IJob } from "../../types";
 
 import { Cell, HeaderCell, Row } from "../styles/StyledJobs";
+import { getJobStatusString } from "../utils/util";
+import JobStatusCell from "./JobStatusCell";
 
 const JobsList: React.FC<{ jobs: IJob[] }> = ({ jobs }) => {
+  const handleUpdateJobStatus = (status: JobStatus) => {
+    console.log(getJobStatusString(status));
+  };
+
   return (
     <div>
       <Row isHeader>
@@ -22,7 +29,10 @@ const JobsList: React.FC<{ jobs: IJob[] }> = ({ jobs }) => {
               job.name
             )}
           </Cell>
-          <Cell>{job.status}</Cell>
+          <JobStatusCell
+            status={job.status}
+            onUpdateStatus={handleUpdateJobStatus}
+          />
           <Cell>{new Date(job.dateModified).toDateString()}</Cell>
         </Row>
       ))}

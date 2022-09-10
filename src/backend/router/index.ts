@@ -1,7 +1,8 @@
+import { JobStatus } from "@prisma/client";
 import * as trpc from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { resolve } from "path";
-import { z } from "zod";
+import { infer, z } from "zod";
 import { IBoard, IJob } from "../../../types";
 import prisma from "../../backend/utils/prisma";
 
@@ -25,8 +26,6 @@ export const appRouter = trpc
     async resolve({ ctx }) {
       const res = await fetch("/api/auth/session");
       const session = res.json();
-
-      console.log({ WHAT: session });
 
       if (Object.keys(session).length) {
         console.log({ what: "yo", session });
@@ -107,6 +106,8 @@ export const appRouter = trpc
           cause: "Idk",
         });
       }
+
+      return board;
     },
   })
   .mutation("job", {
@@ -114,9 +115,14 @@ export const appRouter = trpc
       name: z.string(),
       boardId: z.string(),
       url: z.string().nullable(),
+      status: z.nativeEnum(JobStatus).nullable(),
     }),
     async resolve({ input: { name, boardId, url } }) {
-      const jobInDb = await prisma.job.create({ data: { name, boardId, url } });
+      const jobInDb = await prisma.job.upsert({
+        create: { name, boardId, url },
+        update: { status },
+        where: { id },
+      });
 
       if (!jobInDb) {
         return { success: false, error: "No Job Found" };

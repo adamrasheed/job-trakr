@@ -105,32 +105,6 @@ input {
   box-shadow: 0 0 0 1px currentColor;
 }
 
-button {
-  background-color: var(--color-button-bg);
-  color: var(--color-button-text);
-  padding: 0.5rem 1.25rem;
-  line-height: 1;
-  font-size: 1rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all 0.15s ease-in-out;
-  opacity: 1;
-}
-
-button:hover,
-button:focus {
-  opacity: 0.8;
-}
-
-button:disabled,
-button[disabled] {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
 .container {
   width: 100%;
   margin: 0 auto;
